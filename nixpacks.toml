@@ -1,5 +1,5 @@
 [phases.setup]
-aptPkgs = ["apache2"]
+aptPkgs = ["apache2", "libapache2-mod-php"]
 
 [start]
 cmd = "vendor/bin/heroku-php-apache2 public/"
