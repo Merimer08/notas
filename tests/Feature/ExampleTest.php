@@ -1,25 +1,58 @@
-test/Feature/ExampleTest.php
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Note;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class NotesApiTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
-    }
-     public function test_home_redirects_to_notes(): void
+    public function test_lists_only_my_notes(): void
     {
-        $response = $this->get('/');
-        $response->assertRedirect('/notes');
+        $me = User::factory()->create();
+        $other = User::factory()->create();
+
+        Note::factory()->for($me)->create(['title' => 'mía']);
+        Note::factory()->for($other)->create(['title' => 'ajena']);
+
+        Sanctum::actingAs($me);
+
+        $res = $this->getJson('/api/v1/notes');
+        $res->assertOk()
+            ->assertJsonFragment(['title' => 'mía'])
+            ->assertJsonMissing(['title' => 'ajena']);
+    }
+
+    public function test_can_create_note_with_tags(): void
+    {
+        $me = User::factory()->create();
+        Sanctum::actingAs($me);
+
+        $payload = [
+            'title'       => 'API creada',
+            'content'     => 'hola',
+            'pinned'      => false,
+            'is_archived' => false,
+            'tags'        => ['work', 'ideas'],
+        ];
+
+        $res = $this->postJson('/api/v1/notes', $payload);
+        $res->assertCreated();
+
+        $this->assertDatabaseHas('notes', [
+            'title' => 'API creada',
+            'user_id' => $me->id,
+        ]);
+
+        $note = Note::firstWhere('title', 'API creada');
+        $this->assertNotNull($note);
+        $this->assertCount(2, $note->tags);
+        $this->assertTrue($note->tags->pluck('slug')->contains('work'));
+        $this->assertTrue($note->tags->pluck('slug')->contains('ideas'));
     }
 }
