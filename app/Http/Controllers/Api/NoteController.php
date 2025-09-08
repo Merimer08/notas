@@ -70,33 +70,39 @@ class NoteController extends Controller
     /**
      * POST /api/v1/notes
      */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'title'       => ['required', 'string', 'max:200'],
-            'content'     => ['nullable', 'string'],
-            'pinned'      => ['boolean'],
-            'is_archived' => ['boolean'],
-            'tags'        => ['array'],
-            'tags.*'      => ['string', 'max:30'],
-        ]);
+   // app/Http/Controllers/Api/NoteController.php
 
-        $note = new Note();
-        $note->fill([
-            'title'       => $data['title'],
-            'content'     => $data['content'] ?? null,
-            'pinned'      => (bool) ($data['pinned'] ?? false),
-            'is_archived' => (bool) ($data['is_archived'] ?? false),
-        ]);
-        $note->user_id = $request->user()->id;
-        $note->save();
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'title'       => ['required','string','max:200'],
+        'content'     => ['nullable','string'],
+        'pinned'      => ['boolean'],
+        'is_archived' => ['boolean'],
+        'tags'        => ['array'],
+        'tags.*'      => ['string','max:30'],
+    ]);
 
-        if (!empty($data['tags'])) {
-            $this->syncTags($note, $data['tags']);
-        }
+    $note = new Note();
+    $note->fill([
+        'title'       => $data['title'],
+        'content'     => $data['content'] ?? null,
+        'pinned'      => (bool)($data['pinned'] ?? false),
+        'is_archived' => (bool)($data['is_archived'] ?? false),
+    ]);
+    $note->user_id = $request->user()->id;
+    $note->save();
 
-        return NoteResource::make($note->load('tags'));
+    if (!empty($data['tags'])) {
+        $this->syncTags($note, $data['tags']);
     }
+
+    // ⬇️ 201
+    return NoteResource::make($note->load('tags'))
+        ->response()
+        ->setStatusCode(201);
+}
+
 
     /**
      * GET /api/v1/notes/{note}
