@@ -1,5 +1,20 @@
 [phases.setup]
-aptPkgs = ["apache2", "libapache2-mod-php"]
+# Sin Apache/Heroku. Nixpacks instalará PHP, Composer y Node automáticamente.
+
+[phases.install]
+cmds = [
+  "composer install --no-dev --prefer-dist --optimize-autoloader",
+  "npm ci"
+]
+
+[phases.build]
+cmds = [
+  "npm run build",
+  "php artisan config:cache",
+  "php artisan route:cache",
+  "php artisan view:cache"
+]
 
 [start]
-cmd = "vendor/bin/heroku-php-apache2 public/"
+# El Procfile manda; si no hubiera Procfile, usaríamos:
+# cmd = "php -r \"is_dir('storage/database')||mkdir('storage/database',0777,true);\" && php -r \"file_exists('storage/database/database.sqlite')||touch('storage/database/database.sqlite');\" && php artisan migrate --force --seed && php artisan serve --host 0.0.0.0 --port $PORT"
