@@ -1,9 +1,5 @@
-# nixpacks.toml
-
 [phases.setup]
-# Le decimos a Nixpacks que, además de PHP, instale el paquete del sistema para Apache2
 aptPkgs = ["apache2"]
 
 [start]
-# Definimos el comando de inicio aquí (esto es más moderno y reemplaza al Procfile)
 cmd = "vendor/bin/heroku-php-apache2 public/"
