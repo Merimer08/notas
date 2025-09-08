@@ -8,12 +8,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class NoteResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * Transforma el modelo Note a JSON de salida de la API.
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'          => $this->id,
+            'title'       => $this->title,
+            'content'     => $this->content,
+            'pinned'      => (bool) $this->pinned,
+            'is_archived' => (bool) $this->is_archived,
+            'tags'        => $this->whenLoaded('tags', fn () => $this->tags->pluck('slug')),
+            'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
+        ];
     }
 }

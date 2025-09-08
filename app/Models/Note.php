@@ -1,15 +1,35 @@
-// app/Models/Note.php
 <?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Note extends Model
 {
-  protected $fillable = ['title','content','pinned','is_archived'];
-  public function user(){ return $this->belongsTo(User::class); }
-  public function tags(){ return $this->belongsToMany(Tag::class); }
-}
+    use HasFactory;
 
-// app/Models/Tag.php
-class Tag extends Model
-{
-  protected $fillable = ['name','slug'];
-  public function notes(){ return $this->belongsToMany(Note::class); }
+    protected $fillable = [
+        'title',
+        'content',
+        'pinned',
+        'is_archived',
+        'user_id',
+    ];
+
+    protected $casts = [
+        'pinned' => 'bool',
+        'is_archived' => 'bool',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Ojo: el pivot se llama 'note_tag'
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'note_tag');
+    }
 }
