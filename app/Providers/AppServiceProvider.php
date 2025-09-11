@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+// 1. AÑADE ESTA LÍNEA PARA IMPORTAR LA CLASE URL
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // 2. ESTE CÓDIGO AHORA FUNCIONARÁ CORRECTAMENTE
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
