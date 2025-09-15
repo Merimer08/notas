@@ -1,69 +1,97 @@
 <x-1public>
-    {{-- Pasamos un título personalizado al layout --}}
-    <x-slot name="title">
-        Bienvenido al Gestor de Notas
-    </x-slot>
+  {{-- Título que usará el layout en <title> --}}
+  <x-slot:title>Bienvenido al Gestor de Notas</x-slot:title>
 
-    {{-- Aquí va solo el contenido específico de esta página --}}
+  {{-- Hero / Introducción --}}
+  <section class="bg-white shadow-sm rounded-xl p-6 md:p-8 mb-8">
+    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-3">
+      Bienvenido al Gestor de Notas
+    </h1>
+    <p class="text-gray-600 leading-relaxed">
+      Proyecto de notas personales en línea con Laravel 12, autenticación con Breeze,
+      API REST protegida con Sanctum y funcionalidades de CRUD, búsqueda, etiquetas
+      y paginación. Ideal para usar vía web o integrarlo desde otra app mediante API.
+    </p>
+  </section>
 
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <h1 class="text-3xl font-bold mb-4">Welcome to Note Manager</h1>
-        <p>This is the welcome page.</p>
-        <p> Se trata Este texto describe un proyecto de gestión de notas personales en línea desarrollado con Laravel 12, que incluye funcionalidades como CRUD (Crear, Leer, Actualizar, Borrar), búsqueda, etiquetas y paginación. El sistema ofrece autenticación de usuario a través de Breeze y una API REST segura con tokens Sanctum, permitiendo la creación y administración de notas aisladas por usuario. Se detallan los requisitos, pasos de instalación, configuración y arranque local, así como la estructura del proyecto, los modelos de datos, las relaciones, las rutas web y API, y ejemplos de cómo interactuar con la API usando cURL. Finalmente, el documento aborda solución de problemas frecuentes, opciones de despliegue y un plan de desarrollo con ideas futuras para el proyecto.
-
-        </p>
-    </div>
-
-  <div class="bg-white shadow-md rounded-lg p-6 md:p-8">
-
-    {{-- 1 columna en móvil, 2 en pantallas medianas (iPad vertical) en adelante --}}
+  {{-- Doble columna: demo web y API --}}
+  <section class="bg-white shadow-sm rounded-xl p-6 md:p-8 mb-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+      {{-- Columna izquierda: probar app --}}
+      <div>
+        <h2 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">Pruébalo</h2>
+        <p class="text-gray-600 mb-6">
+          Entra con tu cuenta o regístrate para empezar a crear y organizar tus notas.
+        </p>
 
-        <div>
-            <h2 class="text-3xl font-bold mb-4 text-gray-800">Pruébalo</h2>
-            <p class="mb-6 text-gray-600">
-                Interactúa directamente con la aplicación web. Regístrate para crear tu cuenta y empezar a gestionar tus notas personales.
-            </p>
-            <div class="flex flex-wrap gap-4">
-                <a href="{{ route('login') }}" class="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700">
-                    Iniciar Sesión
-                </a>
-                <a href="{{ route('register') }}" class="px-5 py-2.5 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700">
-                    Registrarse
-                </a>
-            </div>
+        @auth
+          <div class="flex flex-wrap gap-3">
+            <a href="{{ url('/dashboard') }}"
+               class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
+              Ir a tus notas
+            </a>
+          </div>
+        @else
+          <div class="flex flex-wrap gap-3">
+            <a href="{{ route('login') }}"
+               class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
+              Iniciar sesión
+            </a>
+            @if (Route::has('register'))
+              <a href="{{ route('register') }}"
+                 class="inline-flex items-center px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold shadow hover:bg-emerald-700">
+                Registrarse
+              </a>
+            @endif
+          </div>
+        @endauth
+      </div>
+
+      {{-- Columna derecha: API --}}
+      <div class="md:border-l md:pl-8 border-gray-200">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-3">Usarlo como API</h2>
+        <p class="text-gray-600 mb-4">
+          Expone una API REST con autenticación por token (Sanctum). Perfecta para
+          integraciones desde apps móviles, scripts o frontends externos.
+        </p>
+        <div class="flex gap-3">
+          <a href="#"
+             class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-800 text-white font-semibold shadow hover:bg-gray-900">
+            Ver documentación de la API
+          </a>
+          <a href="{{ url('/api/ping') }}"
+             class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-100 text-gray-800 font-semibold shadow hover:bg-gray-200">
+            Probar /api/ping
+          </a>
         </div>
-
-        <div class="md:border-l md:pl-8 border-gray-200">
-            <h2 class="text-2xl font-semibold mb-3 text-gray-800">Como una API</h2>
-            <p class="mb-4 text-gray-600">
-                También puedes interactuar con la API REST segura. Ideal para integrar con otras aplicaciones o scripts.
-            </p>
-            <div class="flex">
-                <a href="#" class="px-5 py-2.5 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800">
-                    Ver Documentación API
-                </a>
-            </div>
-        </div>
-
+      </div>
     </div>
-</div>
-</div>
+  </section>
 
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-6">
+  {{-- Mapa mental --}}
+  <section class="bg-white shadow-sm rounded-xl p-6 md:p-8 mb-8">
+    <article>
+      <h2 class="text-2xl font-semibold text-gray-900 mb-3">Mapa mental</h2>
+      <p class="text-gray-600">
+        Para una visión general del proyecto, consulta el
+        <a href="{{ url('/mental') }}" target="_blank" class="text-indigo-600 hover:text-indigo-700 underline">
+          mapa mental
+        </a>.
+      </p>
+    </article>
+  </section>
 
-        <article class="mb-6">
-            <h2 class="text-2xl font-semibold border-b pb-2 mb-3">Mapa mental</h2>
-            <p>Para una visión general del proyecto, consulta el <a href="{{ url('/mental') }}" target="_blank" class="text-blue-500 underline">mapa mental</a>.</p>
-        </article>
-
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <article class="mb-6">
-            <h2 class="text-2xl font-semibold border-b pb-2 mb-3">Instruciones</h2>
-            <p>Para una visión general del proyecto, consulta el <a href="{{ url('/instruciones') }}" target="_blank" class="text-blue-500 underline">instruciones</a>.</p>
-        </article>
-    </div>
-
+  {{-- Instrucciones --}}
+  <section class="bg-white shadow-sm rounded-xl p-6 md:p-8">
+    <article>
+      <h2 class="text-2xl font-semibold text-gray-900 mb-3">Instrucciones</h2>
+      <p class="text-gray-600">
+        Guías de instalación, configuración y despliegue:
+        <a href="{{ url('/instruciones') }}" target="_blank" class="text-indigo-600 hover:text-indigo-700 underline">
+          ver instrucciones
+        </a>.
+      </p>
+    </article>
+  </section>
 </x-1public>
+<x-1footer />
