@@ -8,9 +8,7 @@
       Bienvenido al Gestor de Notas
     </h1>
     <p class="text-gray-600 leading-relaxed">
-      Proyecto de notas personales en línea con Laravel 12, autenticación con Breeze,
-      API REST protegida con Sanctum y funcionalidades de CRUD, búsqueda, etiquetas
-      y paginación. Ideal para usar vía web o integrarlo desde otra app mediante API.
+      gestor de notas online desarrollado con Laravel 12, Breeze para autenticación de usuario, y Sanctum para una API REST. Detalla las funcionalidades principales como el CRUD de notas, gestión de etiquetas, búsqueda y paginación, junto con los requisitos técnicos y un proceso de instalación y arranque local. Además, el documento proporciona una estructura relevante del proyecto, información sobre autorización mediante Policies, los modelos y relaciones de la base de datos, y las rutas tanto para la interfaz web como para la API, incluyendo ejemplos de cURL. Finalmente, se abordan pruebas, despliegue en producción y una sección de solución de problemas.
     </p>
   </section>
 
@@ -25,25 +23,25 @@
         </p>
 
         @auth
-          <div class="flex flex-wrap gap-3">
-            <a href="{{ url('/dashboard') }}"
-               class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
-              Ir a tus notas
-            </a>
-          </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="{{ url('/dashboard') }}"
+            class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
+            Ir a tus notas
+          </a>
+        </div>
         @else
-          <div class="flex flex-wrap gap-3">
-            <a href="{{ route('login') }}"
-               class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
-              Iniciar sesión
-            </a>
-            @if (Route::has('register'))
-              <a href="{{ route('register') }}"
-                 class="inline-flex items-center px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold shadow hover:bg-emerald-700">
-                Registrarse
-              </a>
-            @endif
-          </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="{{ route('login') }}"
+            class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">
+            Iniciar sesión
+          </a>
+          @if (Route::has('register'))
+          <a href="{{ route('register') }}"
+            class="inline-flex items-center px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold shadow hover:bg-emerald-700">
+            Registrarse
+          </a>
+          @endif
+        </div>
         @endauth
       </div>
 
@@ -55,17 +53,16 @@
           integraciones desde apps móviles, scripts o frontends externos.
         </p>
         <div class="flex gap-3">
-          <a href="#"
-             class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-800 text-white font-semibold shadow hover:bg-gray-900">
+          <a href="#" id="api-docs"
+            class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-800 text-white font-semibold shadow hover:bg-gray-900">
             Ver documentación de la API
           </a>
-          <a href="{{ url('/api/ping') }}"
-             class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-100 text-gray-800 font-semibold shadow hover:bg-gray-200">
+          <a href="{{ url('/api/ping') }}" id="api-ping"
+            class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-100 text-gray-800 font-semibold shadow hover:bg-gray-200">
             Probar /api/ping
           </a>
         </div>
       </div>
-    </div>
   </section>
 
   {{-- Mapa mental --}}
@@ -94,4 +91,19 @@
     </article>
   </section>
 </x-1public>
+{{-- Script para capturar clics --}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const links = ["api-docs", "api-ping"];
+    links.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("click", (e) => {
+          e.preventDefault();
+          alert("Actualmente estamos trabajando en ello 🚧");
+        });
+      }
+    });
+  });
+</script>
 <x-1footer />

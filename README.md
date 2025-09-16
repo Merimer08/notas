@@ -1,144 +1,230 @@
-# 🗺️ Mapa Mental de Laravel
+# 📝 Gestor de Notas Online (Laravel 12)
 
-Un desglose completo de los conceptos, componentes y el ecosistema del framework PHP Laravel.
+## ☁️ Demo en Producción
 
----
+➡️ [https://notasml.up.railway.app/](https://notasml.up.railway.app/)
 
-## 📋 Índice
+## 🎯 Resumen del Proyecto
 
-1.  [¿Qué es Laravel?](#-qué-es-laravel)
-2.  [Ventajas](#-ventajas)
-3.  [Componentes Clave](#-componentes-clave)
-4.  [Ciclo de Vida de una Petición](#-ciclo-de-vida-de-una-petición)
-5.  [Rutas](#-rutas)
-6.  [Controladores](#-controladores)
-7.  [Vistas](#-vistas)
-8.  [Modelos](#-modelos)
-9.  [Bases de Datos](#-bases-de-datos)
-10. [Autenticación](#-autenticación)
-11. [API REST](#-api-rest)
-12. [Despliegue](#-despliegue)
-13. [Comunidad y Recursos](#-comunidad-y-recursos)
-14. [Seguridad](#-seguridad)
+Este es un **gestor de notas personales** completo, desarrollado como un proyecto **MVP** (Producto Mínimo Viable).  
+La aplicación ofrece una solución robusta para la gestión de notas, con una interfaz web (`Blade`) y una **API REST** segura para su consumo externo.
+
+Desarrollado con **Laravel 12**, el proyecto implementa las mejores prácticas del framework:
+
+- **Autenticación**: Gestión de usuarios completa con `Laravel Breeze`.
+- **Autorización**: Políticas de acceso (`Policies`) para asegurar que cada usuario solo pueda interactuar con sus propias notas.
+- **API**: `Laravel Sanctum` para autenticación segura de la API mediante tokens.
+- **Manejo de Datos**: CRUD de notas con **etiquetas**, **búsqueda**, **filtros** y **ordenación**.
 
 ---
 
-### 💡 ¿Qué es Laravel?
+## ✨ Características Principales
 
--   **Framework de PHP**: Moderno y robusto para el desarrollo web.
--   **Código abierto**: Gratuito y mantenido por la comunidad.
--   **Patrón MVC**: Sigue el patrón arquitectónico Modelo-Vista-Controlador.
--   **Sintaxis expresiva**: Permite escribir código limpio y legible.
+### **Frontend (Blade)**
 
-### 👍 Ventajas
+- CRUD completo (crear, leer, actualizar, eliminar notas).
+- Panel de control con listado, paginación y buscador avanzado.
+- Filtros combinables (texto + etiquetas).
+- Seguridad CSRF en formularios.
 
--   **Desarrollo rápido**: Gracias a sus componentes y herramientas integradas.
--   **Seguridad**: Ofrece protección contra vulnerabilidades comunes (XSS, CSRF, inyección SQL).
--   **Escalabilidad**: Buen rendimiento y adaptable a proyectos de gran tamaño.
--   **Gran comunidad**: Amplio soporte, tutoriales y paquetes de terceros.
--   **Curva de aprendizaje**: Considerada accesible para quienes conocen PHP y OOP.
+### **Backend (API REST)**
 
-### 🧩 Componentes Clave
+- Rutas protegidas con `auth:sanctum`.
+- Endpoints estándar (`Route::apiResource`).
+- Filtros avanzados: `q`, `tags`, `sort`, `per_page`.
+- Validación robusta de requests.
 
--   **Composer**: Gestor de dependencias de PHP.
--   **Artisan**: Interfaz de línea de comandos para tareas comunes (crear controladores, migraciones, etc.).
--   **Eloquent ORM**: Mapeo Objeto-Relacional para interactuar con la base de datos de forma intuitiva.
--   **Blade**: Motor de plantillas potente y sencillo.
--   **Vite**: Herramienta de frontend para compilar y gestionar assets (CSS, JS).
+---
 
-### 🔄 Ciclo de Vida de una Petición
+## 🛠 Requisitos y Tecnología
 
-1.  **Entrada (`index.php`)**: El punto de entrada de todas las peticiones.
-2.  **Kernel HTTP**: Carga los proveedores de servicios y el middleware global.
-3.  **Service Providers**: Registran y arrancan los servicios de la aplicación.
-4.  **Router**: Dirige la petición a la ruta o controlador correspondiente.
-5.  **Middleware**: Capas que filtran las peticiones HTTP (autenticación, CSRF, etc.).
-6.  **Controlador**: Ejecuta la lógica de la aplicación.
-7.  **Respuesta**: Se genera una respuesta (HTML, JSON) y se envía al cliente.
+- **Lenguajes**: PHP 8.2+, Node.js 18+
+- **Frameworks**: Laravel 12, Breeze, Sanctum
+- **Gestores**: Composer, npm
+- **BD**: MySQL / MariaDB o SQLite
+- **Servidor**: `php artisan serve`
 
-### routing: Rutas
+---
 
--   **Definición**:
-    -   `routes/web.php`: Para rutas con estado (sesiones, cookies).
-    -   `routes/api.php`: Para rutas sin estado (APIs).
--   **Tipos de Verbos**:
-    -   `GET`: Obtener recursos.
-    -   `POST`: Crear recursos.
-    -   `PUT` / `PATCH`: Actualizar recursos.
-    -   `DELETE`: Eliminar recursos.
--   **Parámetros**: Captura de segmentos dinámicos de la URL.
--   **Rutas con nombre**: Asigna un alias a una ruta para referenciarla fácilmente.
--   **Grupos de rutas**: Aplica atributos (middleware, prefijos) a un conjunto de rutas.
+## 🚀 Instalación y Arranque Local
 
-### 🕹️ Controladores
+### 1. Clonar el Repositorio
 
--   **Lógica de la aplicación**: Contienen la lógica principal para manejar las peticiones.
--   **Generación con Artisan**: `php artisan make:controller NombreController`.
--   **Métodos de acción**: Funciones públicas que responden a las rutas.
--   **Resource Controllers**: Controladores predefinidos para operaciones CRUD.
+```bash
+git clone https://github.com/tu-usuario/gestor-notas.git
+cd gestor-notas
+```
 
-### 🖼️ Vistas
+### 2. Configurar Entorno
 
--   **Capa de presentación**: Separan la lógica de la aplicación del HTML.
--   **Blade**:
-    -   **Sintaxis**: Usa `{{ $variable }}` para imprimir datos y `@directiva` para estructuras de control.
-    -   **Directivas**: `@if`, `@foreach`, `@auth`, etc.
-    -   **Layouts**: Plantillas maestras que se extienden con `@extends` y `@section`.
-    -   **Componentes**: Piezas de UI reutilizables.
--   **Pasar datos**: Se envían datos desde el controlador usando `view('nombre.vista', ['clave' => $valor])`.
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-### 🗄️ Modelos
+Editar `.env` con:
 
--   **Eloquent ORM**:
-    -   **Definición**: Cada tabla de la base de datos tiene un modelo correspondiente para interactuar con ella.
-    -   **Relaciones**:
-        -   Uno a uno (`hasOne`, `belongsTo`).
-        -   Uno a muchos (`hasMany`, `belongsTo`).
-        -   Muchos a muchos (`belongsToMany`).
-    -   **Consultas**: Permite construir consultas a la base de datos de forma fluida y programática.
--   **Interacción con la BD**: Representan la capa de datos de la aplicación.
+```env
+APP_URL=http://localhost:8000
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=notas
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-### 💾 Bases de Datos
+### 3. Instalar Dependencias
 
--   **Configuración**: Se define en el archivo `.env`.
--   **Migraciones**: Control de versiones para el esquema de la base de datos.
-    -   Permiten crear y modificar tablas de forma programática.
--   **Query Builder**: Interfaz fluida para construir consultas SQL.
--   **Seeders**: Permiten poblar la base de datos con datos de prueba.
+```bash
+composer install
+npm install
+```
 
-### 🔐 Autenticación
+### 4. Instalar Breeze y Sanctum
 
--   **Laravel Breeze**: Scaffolding simple y personalizable para autenticación.
--   **Laravel Jetstream**: Scaffolding más avanzado con opciones como autenticación de dos factores, gestión de equipos, etc.
--   **Laravel Sanctum**: Autenticación ligera para SPAs y APIs (basada en tokens).
--   **Gates y Policies**: Definen las reglas de autorización para las acciones de los usuarios.
+```bash
+# Breeze
+composer require laravel/breeze --dev
+php artisan breeze:install blade
+npm run build
 
-### 📡 API REST
+# Sanctum
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+```
 
--   **Rutas de API**: Definidas en `routes/api.php`, son stateless y usualmente retornan JSON.
--   **Controladores de API**: Optimizados para devolver respuestas JSON.
--   **Resource Responses**: Estandarizan las respuestas JSON para el CRUD.
--   **Sanctum (Tokens)**: Proporciona un sistema sencillo de autenticación por tokens de API.
+### 5. Migraciones y Sesiones
 
-### 🚀 Despliegue
+```bash
+php artisan session:table
+php artisan migrate
+```
 
--   **Servidores**:
-    -   **Laravel Forge**: Servicio para aprovisionar y gestionar servidores optimizados para Laravel.
-    -   **Laravel Vapor**: Plataforma de despliegue serverless para Laravel en AWS.
-    -   **Manual**: Despliegue en servidores compartidos o VPS.
--   **Optimización**: Comandos como `php artisan optimize`, `config:cache`, `route:cache` para mejorar el rendimiento en producción.
+### 6. Arrancar Servidor Local
 
-### 🌐 Comunidad y Recursos
+```bash
+php artisan serve
+npm run dev
+```
 
--   **[Documentación oficial](https://laravel.com/docs)**: La fuente principal y más fiable.
--   **[Laracasts](https://laracasts.com/)**: Tutoriales en vídeo de alta calidad (el "Netflix para desarrolladores").
--   **Foros y blogs**: Stack Overflow, Laravel News, etc.
--   **Paquetes (Packages)**: Un ecosistema enorme de paquetes en [Packagist](https://packagist.org/) para extender funcionalidades.
+Aplicación: [http://localhost:8000](http://localhost:8000)
 
-### 🛡️ Seguridad
+---
 
--   **Protección CSRF**: Laravel genera y verifica automáticamente tokens CSRF en los formularios.
--   **Inyección SQL (Eloquent)**: El ORM usa "parameter binding" para prevenir ataques de inyección SQL.
--   **Cross-Site Scripting (XSS)**: Blade escapa automáticamente las variables `{{ }}` para prevenir XSS.
--   **Hashing de contraseñas**: Usa Bcrypt por defecto para almacenar contraseñas de forma segura.
+## 🔒 Autorización (Policies)
 
+La `NotePolicy` asegura que solo la dueña pueda ver/editar/borrar sus notas.
+
+```php
+protected $policies = [
+    \App\Models\Note::class => \App\Policies\NotePolicy::class,
+];
+```
+
+---
+
+## 📦 Estructura del Proyecto
+
+```
+app/
+  Http/
+    Controllers/
+      NoteController.php       ← Web
+      Api/NoteController.php   ← API
+    Resources/NoteResource.php
+  Models/
+    Note.php
+    Tag.php
+  Policies/NotePolicy.php
+resources/views/notes/
+  index.blade.php
+  create.blade.php
+  edit.blade.php
+routes/
+  web.php
+  api.php
+database/
+  migrations/
+  seeders/
+  factories/
+```
+
+---
+
+## 🌐 Rutas y API
+
+### Web (con `auth`)
+
+- `GET /notes` — listado
+- `POST /notes` — crear
+- `GET /notes/{id}` — ver
+- `PATCH /notes/{id}` — actualizar
+- `DELETE /notes/{id}` — borrar
+
+### API (con `auth:sanctum`)
+
+- `GET /api/v1/notes`
+- `POST /api/v1/notes`
+- `GET /api/v1/notes/{id}`
+- `PATCH /api/v1/notes/{id}`
+- `DELETE /api/v1/notes/{id}`
+
+---
+
+## 📡 Ejemplos cURL
+
+```bash
+# Listar notas
+curl -H "Authorization: Bearer TOKEN" http://localhost:8000/api/v1/notes
+
+# Crear nota
+curl -X POST http://localhost:8000/api/v1/notes   -H "Authorization: Bearer TOKEN"   -H "Content-Type: application/json"   -d '{"title":"Primera API","content":"hola","tags":["work","ideas"]}'
+```
+
+---
+
+## 🧪 Tests
+
+Ejecutar:
+
+```bash
+php artisan test
+```
+
+Incluye pruebas de:
+
+- API: CRUD, filtros, autorización.
+- Web: CRUD UI y redirecciones.
+
+---
+
+## ☁️ Demo en Producción
+
+➡️ [https://notasml.up.railway.app/](https://notasml.up.railway.app/)
+
+Despliegue:
+
+```bash
+php artisan migrate --force
+php artisan optimize
+```
+
+---
+
+## 🧰 FAQ (Solución de Problemas)
+
+- **419 Page Expired** → Revisar `@csrf` y APP_URL en `.env`.
+- **Foreign key errno 150** → Revisar tipos y orden en migraciones.
+- **Route [profile.edit] not defined** → Quitar enlace o definir ruta.
+
+---
+
+## 🗺️ Roadmap
+
+- Papelera con SoftDeletes.
+- Etiquetas con colores.
+- Editor Markdown.
+- Exportar/Importar JSON.
+- OpenAPI/Swagger.
+- Inertia + React.
