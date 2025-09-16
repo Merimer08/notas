@@ -1,143 +1,366 @@
-# 🗺️ Mapa Mental de Laravel
 
-Un desglose completo de los conceptos, componentes y el ecosistema del framework PHP Laravel.
+//////////////
+# Gestor de Notas (Laravel 12 + Breeze + Sanctum)
 
----
-
-## 📋 Índice
-
-1.  [¿Qué es Laravel?](#-qué-es-laravel)
-2.  [Ventajas](#-ventajas)
-3.  [Componentes Clave](#-componentes-clave)
-4.  [Ciclo de Vida de una Petición](#-ciclo-de-vida-de-una-petición)
-5.  [Rutas](#-rutas)
-6.  [Controladores](#-controladores)
-7.  [Vistas](#-vistas)
-8.  [Modelos](#-modelos)
-9.  [Bases de Datos](#-bases-de-datos)
-10. [Autenticación](#-autenticación)
-11. [API REST](#-api-rest)
-12. [Despliegue](#-despliegue)
-13. [Comunidad y Recursos](#-comunidad-y-recursos)
-14. [Seguridad](#-seguridad)
+MVP de un gestor de **notas personales** con **CRUD**, **búsqueda**, **etiquetas**, **paginación/ordenación** y **API REST** autenticada (tokens **Sanctum**).  
+Frontend en **Blade** (Breeze), backend en **Laravel 12**.
 
 ---
 
-### 💡 ¿Qué es Laravel?
+## 🚀 Funcionalidades (MVP)
 
--   **Framework de PHP**: Moderno y robusto para el desarrollo web.
--   **Código abierto**: Gratuito y mantenido por la comunidad.
--   **Patrón MVC**: Sigue el patrón arquitectónico Modelo-Vista-Controlador.
--   **Sintaxis expresiva**: Permite escribir código limpio y legible.
+- Autenticación de usuario (Breeze: login/registro/logout).
+- API con tokens (Sanctum) para consumo externo.
+- Notas por usuario (aislamiento por Policies).
+- CRUD de notas.
+- Etiquetas (tagging) + filtro por etiquetas.
+- Búsqueda por **título** y **contenido**.
+- Paginación, ordenación y validación.
+- README y demo listos.
 
-### 👍 Ventajas
+---
 
--   **Desarrollo rápido**: Gracias a sus componentes y herramientas integradas.
--   **Seguridad**: Ofrece protección contra vulnerabilidades comunes (XSS, CSRF, inyección SQL).
--   **Escalabilidad**: Buen rendimiento y adaptable a proyectos de gran tamaño.
--   **Gran comunidad**: Amplio soporte, tutoriales y paquetes de terceros.
--   **Curva de aprendizaje**: Considerada accesible para quienes conocen PHP y OOP.
+## 🧰 Requisitos
 
-### 🧩 Componentes Clave
+- **PHP 8.2+**
+- **Composer**
+- **Node.js 18+**
+- **MySQL/MariaDB** (XAMPP en Windows funciona) o **SQLite** (solo para tests)
 
--   **Composer**: Gestor de dependencias de PHP.
--   **Artisan**: Interfaz de línea de comandos para tareas comunes (crear controladores, migraciones, etc.).
--   **Eloquent ORM**: Mapeo Objeto-Relacional para interactuar con la base de datos de forma intuitiva.
--   **Blade**: Motor de plantillas potente y sencillo.
--   **Vite**: Herramienta de frontend para compilar y gestionar assets (CSS, JS).
+---
 
-### 🔄 Ciclo de Vida de una Petición
+## 🛠 Instalación y arranque (local)
 
-1.  **Entrada (`index.php`)**: El punto de entrada de todas las peticiones.
-2.  **Kernel HTTP**: Carga los proveedores de servicios y el middleware global.
-3.  **Service Providers**: Registran y arrancan los servicios de la aplicación.
-4.  **Router**: Dirige la petición a la ruta o controlador correspondiente.
-5.  **Middleware**: Capas que filtran las peticiones HTTP (autenticación, CSRF, etc.).
-6.  **Controlador**: Ejecuta la lógica de la aplicación.
-7.  **Respuesta**: Se genera una respuesta (HTML, JSON) y se envía al cliente.
+### 1) Crear o clonar proyecto
 
-### routing: Rutas
+```bash
+# Nuevo proyecto
+composer create-project laravel/laravel notas
+cd notas
+php artisan key:generate
 
--   **Definición**:
-    -   `routes/web.php`: Para rutas con estado (sesiones, cookies).
-    -   `routes/api.php`: Para rutas sin estado (APIs).
--   **Tipos de Verbos**:
-    -   `GET`: Obtener recursos.
-    -   `POST`: Crear recursos.
-    -   `PUT` / `PATCH`: Actualizar recursos.
-    -   `DELETE`: Eliminar recursos.
--   **Parámetros**: Captura de segmentos dinámicos de la URL.
--   **Rutas con nombre**: Asigna un alias a una ruta para referenciarla fácilmente.
--   **Grupos de rutas**: Aplica atributos (middleware, prefijos) a un conjunto de rutas.
+# (O) Proyecto clonado
+git clone https://github.com/tuusuario/gestor-notas.git
+cd gestor-notas
+composer install
+npm install
+2) Configurar entorno
+bash
+Copiar código
+cp .env.example .env
+php artisan key:generate
+Edita .env (ejemplo Windows + XAMPP):
 
-### 🕹️ Controladores
+env
+Copiar código
+APP_URL=http://localhost:8000
+APP_DEBUG=true
 
--   **Lógica de la aplicación**: Contienen la lógica principal para manejar las peticiones.
--   **Generación con Artisan**: `php artisan make:controller NombreController`.
--   **Métodos de acción**: Funciones públicas que responden a las rutas.
--   **Resource Controllers**: Controladores predefinidos para operaciones CRUD.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=notas
+DB_USERNAME=root
+DB_PASSWORD=
 
-### 🖼️ Vistas
+SESSION_DRIVER=database
+SESSION_DOMAIN=
+SESSION_SECURE_COOKIE=false
+SESSION_SAME_SITE=lax
+3) Autenticación (Breeze) y Sanctum
+bash
+Copiar código
+# Breeze (sesión web)
+composer require laravel/breeze --dev
+php artisan breeze:install blade
+npm install && npm run build
 
--   **Capa de presentación**: Separan la lógica de la aplicación del HTML.
--   **Blade**:
-    -   **Sintaxis**: Usa `{{ $variable }}` para imprimir datos y `@directiva` para estructuras de control.
-    -   **Directivas**: `@if`, `@foreach`, `@auth`, etc.
-    -   **Layouts**: Plantillas maestras que se extienden con `@extends` y `@section`.
-    -   **Componentes**: Piezas de UI reutilizables.
--   **Pasar datos**: Se envían datos desde el controlador usando `view('nombre.vista', ['clave' => $valor])`.
+# Sanctum (tokens API)
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+Las rutas de la API usarán el middleware auth:sanctum.
 
-### 🗄️ Modelos
+4) Migraciones + tabla de sesiones
+bash
+Copiar código
+php artisan session:table
+php artisan migrate
+5) Seed de usuario inicial + token API
+Seeder que crea/actualiza un usuario de desarrollo y muestra en consola un token Sanctum:
 
--   **Eloquent ORM**:
-    -   **Definición**: Cada tabla de la base de datos tiene un modelo correspondiente para interactuar con ella.
-    -   **Relaciones**:
-        -   Uno a uno (`hasOne`, `belongsTo`).
-        -   Uno a muchos (`hasMany`, `belongsTo`).
-        -   Muchos a muchos (`belongsToMany`).
-    -   **Consultas**: Permite construir consultas a la base de datos de forma fluida y programática.
--   **Interacción con la BD**: Representan la capa de datos de la aplicación.
+bash
+Copiar código
+php artisan db:seed --class=Database\Seeders\AdminUserSeeder
+Valores por defecto del seeder (modificables):
 
-### 💾 Bases de Datos
+Email: mariamalospelos@gmail.com
 
--   **Configuración**: Se define en el archivo `.env`.
--   **Migraciones**: Control de versiones para el esquema de la base de datos.
-    -   Permiten crear y modificar tablas de forma programática.
--   **Query Builder**: Interfaz fluida para construir consultas SQL.
--   **Seeders**: Permiten poblar la base de datos con datos de prueba.
+Pass: 123456789
 
-### 🔐 Autenticación
+Token: se imprime en consola
 
--   **Laravel Breeze**: Scaffolding simple y personalizable para autenticación.
--   **Laravel Jetstream**: Scaffolding más avanzado con opciones como autenticación de dos factores, gestión de equipos, etc.
--   **Laravel Sanctum**: Autenticación ligera para SPAs y APIs (basada en tokens).
--   **Gates y Policies**: Definen las reglas de autorización para las acciones de los usuarios.
+Alternativa (manual) en Tinker:
 
-### 📡 API REST
+bash
+Copiar código
+php artisan tinker
+>>> $u = App\Models\User::first();
+>>> $u->createToken('demo')->plainTextToken;
+6) Arranque en desarrollo
+bash
+Copiar código
+# Opción A (recomendada en Windows): procesos por separado
+php artisan serve
+npm run dev
 
--   **Rutas de API**: Definidas en `routes/api.php`, son stateless y usualmente retornan JSON.
--   **Controladores de API**: Optimizados para devolver respuestas JSON.
--   **Resource Responses**: Estandarizan las respuestas JSON para el CRUD.
--   **Sanctum (Tokens)**: Proporciona un sistema sencillo de autenticación por tokens de API.
+# Opción B: script si lo tienes declarado en composer.json (sin Pail)
+composer run dev
+Accede en http://localhost:8000.
 
-### 🚀 Despliegue
+🗂 Estructura relevante
+pgsql
+Copiar código
+app/
+  Http/
+    Controllers/
+      NoteController.php         ← Web
+      Api/NoteController.php     ← API
+    Resources/
+      NoteResource.php
+  Models/
+    Note.php
+    Tag.php
+  Policies/
+    NotePolicy.php
+resources/views/notes/
+  index.blade.php
+  create.blade.php
+  edit.blade.php
+  show.blade.php
+routes/
+  web.php
+  api.php
+database/
+  migrations/
+  seeders/
+  factories/
+🔐 Autorización (Policies)
+NotePolicy: solo la dueña puede ver/actualizar/borrar su nota.
 
--   **Servidores**:
-    -   **Laravel Forge**: Servicio para aprovisionar y gestionar servidores optimizados para Laravel.
-    -   **Laravel Vapor**: Plataforma de despliegue serverless para Laravel en AWS.
-    -   **Manual**: Despliegue en servidores compartidos o VPS.
--   **Optimización**: Comandos como `php artisan optimize`, `config:cache`, `route:cache` para mejorar el rendimiento en producción.
+viewAny() = true (el filtrado real por usuario se hace en la query del controlador).
 
-### 🌐 Comunidad y Recursos
+Mapea la policy en AuthServiceProvider:
 
--   **[Documentación oficial](https://laravel.com/docs)**: La fuente principal y más fiable.
--   **[Laracasts](https://laracasts.com/)**: Tutoriales en vídeo de alta calidad (el "Netflix para desarrolladores").
--   **Foros y blogs**: Stack Overflow, Laravel News, etc.
--   **Paquetes (Packages)**: Un ecosistema enorme de paquetes en [Packagist](https://packagist.org/) para extender funcionalidades.
+php
+Copiar código
+protected $policies = [
+    \App\Models\Note::class => \App\Policies\NotePolicy::class,
+];
+🧩 Modelos, relaciones y migraciones
+Note
 
-### 🛡️ Seguridad
+belongsTo(User)
 
--   **Protección CSRF**: Laravel genera y verifica automáticamente tokens CSRF en los formularios.
--   **Inyección SQL (Eloquent)**: El ORM usa "parameter binding" para prevenir ataques de inyección SQL.
--   **Cross-Site Scripting (XSS)**: Blade escapa automáticamente las variables `{{ }}` para prevenir XSS.
--   **Hashing de contraseñas**: Usa Bcrypt por defecto para almacenar contraseñas de forma segura.
+belongsToMany(Tag, 'note_tag')
+
+Tag
+
+belongsToMany(Note, 'note_tag')
+
+Migraciones (resumen):
+
+notes: id, user_id FK, title, content, pinned (bool), is_archived (bool), timestamps.
+
+tags: id, name, slug (único), timestamps.
+
+note_tag: pivote con note_id y tag_id (FKs, PK compuesta).
+
+MySQL (Windows/XAMPP):
+
+Asegura que todos los IDs sean unsigned BIGINT.
+
+Corre primero notes y tags, y después note_tag.
+
+Engine InnoDB.
+
+Si ves errno: 150 al crear note_tag, revisa tipos, nombres de columnas y orden de migraciones.
+
+🌐 Rutas
+Web (routes/web.php)
+/notes → CRUD UI (protegido con auth)
+
+/ → redirect a /notes (dashboard)
+
+API (routes/api.php)
+Prefijo /api/v1 + auth:sanctum:
+
+GET /api/v1/notes — listar (filtros q, tags, sort, per_page)
+
+POST /api/v1/notes — crear (201)
+
+GET /api/v1/notes/{id} — ver
+
+PATCH /api/v1/notes/{id} — actualizar
+
+DELETE /api/v1/notes/{id} — eliminar (204)
+
+GET /api/v1/me — usuario autenticado
+
+Comprobar que están registradas:
+
+bash
+Copiar código
+php artisan route:list | Select-String -Pattern 'api/v1/notes'
+🧭 Búsqueda, filtros y ordenación
+q: busca en title y content.
+
+tags: work,ideas (CSV) o ["work","ideas"] (API).
+
+sort: created_at, -created_at, updated_at, -updated_at, title, -title, pinned, -pinned.
+
+per_page: tamaño de página (máx 50).
+
+📡 Ejemplos cURL (API)
+bash
+Copiar código
+# Listar
+curl -H "Authorization: Bearer TOKEN" http://localhost:8000/api/v1/notes
+
+# Filtros y orden
+curl -H "Authorization: Bearer TOKEN" \
+"http://localhost:8000/api/v1/notes?q=hola&tags=work,ideas&sort=-updated_at&per_page=5"
+
+# Crear (201)
+curl -X POST http://localhost:8000/api/v1/notes \
+  -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" \
+  -d '{"title":"Primera API","content":"hola","pinned":false,"is_archived":false,"tags":["work","ideas"]}'
+
+# Ver
+curl -H "Authorization: Bearer TOKEN" http://localhost:8000/api/v1/notes/1
+
+# Actualizar
+curl -X PATCH http://localhost:8000/api/v1/notes/1 \
+  -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" \
+  -d '{"title":"Renombrada"}'
+
+# Eliminar (204)
+curl -X DELETE -H "Authorization: Bearer TOKEN" http://localhost:8000/api/v1/notes/1
+🖥️ UI (Blade + Breeze)
+Índice con buscador (q), filtro por tags, ordenación (sort) y paginación.
+
+Vistas create, edit, show con validación server-side.
+
+Enlace a Perfil opcional (profile.edit); si no lo usas, elimínalo del layout o protégelo con @if(Route::has('profile.edit')).
+
+🧪 Tests
+Ejecutar:
+
+bash
+Copiar código
+php artisan test
+Tests mínimos recomendados:
+
+API
+
+lista solo mis notas.
+
+crea nota con tags (201).
+
+(extra) 403 al ver nota ajena.
+
+(extra) 422 si falta title.
+
+Web
+
+muestra mis notas en /notes.
+
+permite borrar desde UI.
+
+Home
+
+/ redirige a /notes.
+
+Para acelerar tests: en phpunit.xml usa SQLite in-memory:
+
+xml
+Copiar código
+<server name="DB_CONNECTION" value="sqlite"/>
+<server name="DB_DATABASE" value=":memory:"/>
+☁️ Demo / Producción
+.env:
+
+APP_ENV=production
+
+APP_DEBUG=false
+
+APP_URL=https://tu-dominio.com
+
+SESSION_SECURE_COOKIE=true (si usas HTTPS)
+
+Despliegue:
+
+bash
+Copiar código
+php artisan migrate --force
+php artisan optimize
+CORS (si consumirás desde otro host): configura config/cors.php.
+
+Opciones: Laravel Forge + VPS, Railway/Render, Ploi, Vapor (AWS).
+
+🧰 Solución de problemas (FAQ)
+Foreign key errno: 150 en note_tag
+
+Asegura unsigned BIGINT y orden correcto de migraciones.
+
+Engine InnoDB y nombres de tablas/columnas correctos.
+
+Pail en Windows (pcntl requerido)
+
+Evita laravel/pail en Windows o quítalo del script dev. Usa:
+
+bash
+Copiar código
+php artisan serve
+npm run dev
+419 Page Expired
+
+Incluye @csrf en formularios.
+
+SESSION_DRIVER=database + php artisan session:table && php artisan migrate.
+
+APP_URL coherente con tu host/puerto.
+
+Route [profile.edit] not defined
+
+Añade rutas de perfil (Breeze) o quita el enlace:
+
+php
+Copiar código
+Route::get('/profile', [ProfileController::class,'edit'])->name('profile.edit');
+Class "Model" not found
+
+Modelos con namespace App\Models y extends Illuminate\Database\Eloquent\Model.
+
+Rutas API no aparecen en route:list
+
+Asegura que routes/api.php empiece exactamente con <?php (sin BOM/espacios), tenga use App\Http\Controllers\Api\NoteController;, y limpia cachés:
+
+bash
+Copiar código
+composer dump-autoload
+php artisan optimize:clear
+php artisan route:list
+🗺️ Roadmap (ideas)
+Papelera (SoftDeletes) + restaurar.
+
+Etiquetas con colores.
+
+Markdown en contenido (CommonMark).
+
+Export/Import JSON.
+
+OpenAPI/Swagger (L5-Swagger).
+
+Inertia + React / Livewire.
+
+Búsqueda full-text (Scout + Meilisearch).
